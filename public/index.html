@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event CRUD API Documentation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    p {
+      color: #666;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    summary {
+      cursor: pointer;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  
+  <!-- and it's easy to individually load additional languages -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+  
+  <script>hljs.highlightAll();</script>
+</head>
+<body>
+  <h1>Event CRUD API Documentation</h1>
+  <p>This is a simple HTML file to briefly describe the CRUD API for managing events.</p>
+
+  <p><a href="./events.postman_collection.json">Download postman file</a></p>
+
+  <h2>Endpoints</h2>
+  <ul>
+    <li>
+      <details open>
+        <summary><strong>GET /events</strong>: Retrieve all events.</summary>
+        <pre>
+          <code class="language-js">
+// Retrieve all events or filter by query string
+GET /events
+Response Body: 
+[
+    {
+        "id": 1,
+        "name": "April Graduation",
+        "description": "Graduation is a time to acknowledge and celebrate the success of our students in front of the most important people of all - their whanau, family and friends.",
+        "startdate": "2024-04-16 08:30",
+        "enddate": "2024-04-16 11:30"
+    },
+    {
+        "id": 2,
+        "name": "Health and Sports Careers Expo",
+        "description": "Connect with employers at the Health and Sports Careers Expo and find out more about internships, graduate roles and other career opportunities!",
+        "startdate": "2024-05-15 09:00",
+        "enddate": "2024-05-15 15:00"
+    },
+    {
+        "id": 3,
+        "name": "Open Day - Hamilton",
+        "description": "Open Days are the perfect opportunity to see what the University of Waikato has to offer you.",
+        "startdate": "2024-05-24 08:00",
+        "enddate": "2024-05-24 17:00"
+    },
+    {
+        "id": 4,
+        "name": "Latin American Film Festival",
+        "description": "In its 22nd year the Latin America and Spain Film Festival (LASFF) is a cultural event that aims to bring together communities through the big screen.",
+        "startdate": "2024-09-01 10:00",
+        "enddate": "2024-10-30 10:00"
+    },
+    ...
+]
+          </code>
+        </pre>
+      </details>
+    </li>
+    <li>
+      <details open>
+        <summary><strong>GET /events/:id</strong>: Retrieve a specific event by ID.</summary>
+        <pre>
+          <code class="language-js">
+// Retrieve a specific event by ID
+GET /events/1
+Response Body: 
+[
+    {
+        "id": 1,
+        "name": "April Graduation",
+        "description": "Graduation is a time to acknowledge and celebrate the success of our students in front of the most important people of all - their whanau, family and friends.",
+        "startdate": "2024-04-16 08:30",
+        "enddate": "2024-04-16 11:30"
+    }
+]
+          </code>
+        </pre>
+      </details>
+    </li>
+    <li>
+      <details open>
+        <summary><strong>GET /events?name=:name</strong>: Retrieve events by filtering name.</summary>
+        <pre>
+          <code class="language-js">
+// Retrieve events by filtering name
+GET /events?name=April
+Response Body: 
+[
+    {
+        "id": 1,
+        "name": "April Graduation",
+        "description": "Graduation is a time to acknowledge and celebrate the success of our students in front of the most important people of all - their whanau, family and friends.",
+        "startdate": "2024-04-16 08:30",
+        "enddate": "2024-04-16 11:30"
+    }
+]
+          </code>
+        </pre>
+      </details>
+    </li>
+    <li>
+      <details open>
+        <summary><strong>POST /events</strong>: Create a new event.</summary>
+        <pre>
+          <code class="language-js">
+// Create a new event
+POST /events
+Request Body:
+{
+  "name": "Birthday Party",
+  "description": "A fun celebration with friends and family."
+  "startdate": "2024-05-30",
+  "enddate": "2024-05-30",
+}
+          </code>
+        </pre>
+      </details>
+    </li>
+    <li>
+      <details open>
+        <summary><strong>PUT /events/:id</strong>: Update an existing event by ID.</summary>
+        <pre>
+          <code class="language-js">
+// Update an existing event
+PUT /events/1
+Request Body:
+{
+  "name": "Updated Event Name"
+}
+          </code>
+        </pre>
+      </details>
+    </li>
+    <li>
+      <details open>
+        <summary><strong>DELETE /events/:id</strong>: Delete an event by ID.</summary>
+        <pre>
+          <code class="language-js">
+// Delete an event
+DELETE /events/1
+Request Body:
+{
+  "fieldCount": 0,
+  "affectedRows": 1,
+  "insertId": 0,
+  "info": "",
+  "serverStatus": 2,
+  "warningStatus": 0,
+  "changedRows": 0
+}
+          </code>
+        </pre>
+      </details>
+    </li>
+    <li>
+      <details open>
+        <summary><strong>DELETE /events</strong>: Delete all events.</summary>
+        <pre>
+          <code class="language-js">
+// Delete all events
+DELETE /events
+Request Body:
+{
+  "fieldCount": 0,
+  "affectedRows": 11,
+  "insertId": 0,
+  "info": "",
+  "serverStatus": 34,
+  "warningStatus": 0,
+  "changedRows": 0
+}
+          </code>
+        </pre>
+      </details>
+    </li>
+  </ul>
+
+  <h2>Request and Response Formats</h2>
+  <p>The API accepts and returns data in JSON format.</p>
+</body>
+</html>
