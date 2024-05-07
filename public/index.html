@@ -154,8 +154,19 @@ Request Body:
 PUT /events/1
 Request Body:
 {
-  "name": "Updated Event Name"
+  "name": "a new event name",
 }
+
+Response Body: 
+[
+  {
+    "id": 1,
+    "name": "a new event name",
+    "description": "Graduation is a time to acknowledge and celebrate the success of our students in front of the most important people of all - their whanau, family and friends.",
+    "startdate": "2024-04-16 08:30",
+    "enddate": "2024-04-16 11:30"
+  }
+]
           </code>
         </pre>
       </details>
@@ -169,13 +180,7 @@ Request Body:
 DELETE /events/1
 Request Body:
 {
-  "fieldCount": 0,
-  "affectedRows": 1,
-  "insertId": 0,
-  "info": "",
-  "serverStatus": 2,
-  "warningStatus": 0,
-  "changedRows": 0
+  "affectedRows": 1
 }
           </code>
         </pre>
@@ -190,13 +195,7 @@ Request Body:
 DELETE /events
 Request Body:
 {
-  "fieldCount": 0,
-  "affectedRows": 11,
-  "insertId": 0,
-  "info": "",
-  "serverStatus": 34,
-  "warningStatus": 0,
-  "changedRows": 0
+  "affectedRows": 5
 }
           </code>
         </pre>

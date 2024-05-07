@@ -10,19 +10,23 @@ const db = require('../db');
  * Represents an Event object.
  * @constructor
  * @param {Object} data - The data for the event.
- * @property {number} id - The ID of the event.
  * @property {string} name - The name of the event.
  * @property {string} description - The description of the event.
  * @property {Date} startdate - The start date of the event.
  * @property {Date} enddate - The end date of the event.
  */
 const Event = function(data) {
-  this.id = data.id;
   this.name = data.name;
   this.description = data.description;
   this.startdate = data.startdate;
   this.enddate = data.enddate;
 };
+
+Event.prototype.toPureObject = function () {
+  return Object.entries(this)
+    .filter(([_, value]) => value !== undefined)
+    .reduce((obj, [key, value]) => (obj[key] = value, obj), {});
+}
 
 /**
  * Retrieves all events from the database.
@@ -98,14 +102,18 @@ Event.createEvent = function (request, response) {
   const newEvent = new Event(request.body);
 
   // Execute SQL query to insert the new event into the database
-  db.query('INSERT INTO events SET ?', newEvent, (error, results) => {
+  db.query('INSERT INTO events SET ?', newEvent.toPureObject(), (error, results) => {
     if (error) {
       // If an error occurs during database insertion, send a 500 Internal Server Error response
-      response.status(500).send('An error occurred while creating the appointment');
+      response.status(500).send('An error occurred while creating the event');
     }
 
-    // Send the newly created event object along with its generated ID back to the client
-    response.send({ ...newEvent, id: results.insertId });
+    if (results.insertId) {
+      // Send the newly created event object along with its generated ID back to the client
+      response.send({ id: results.insertId, ...newEvent });
+    } else {
+      response.status(500).send('An error occurred while creating the event');
+    }
   });
 }
 
@@ -123,22 +131,29 @@ Event.updateEvent = function (request, response) {
 
   // Create a new Event object with the updated data from request body
   const updateEvent = new Event(request.body);
-
-  // Check if the updated event object has a valid ID
-  if (!updateEvent.id) {
-    // If ID is missing, send a 400 Bad Request response
-    response.status(400).send({ message: 'Content cannot be empty'});
-  }
+  const eventID = parseInt(request.params.id);
 
   // Execute SQL query to update the event in the database
-  db.query('UPDATE events SET ? WHERE id = ?', [updateEvent, request.params.id], (error, results) => {
+  db.query('UPDATE events SET ? WHERE id = ?', [updateEvent.toPureObject(), eventID], (error, results) => {
     if (error) {
       // If an error occurs during database update, send a 500 Internal Server Error response
-      response.status(500).send('An error occurred while updating the appointment');
+      response.status(500).send('An error occurred while updating the event');
     }
 
-    // Send the updated event object along with its ID back to the client
-    response.send({ ...newEvent, id: results.insertId });
+    if (results.affectedRows <= 0) {
+      response.status(500).send('ID provided could not be updated');
+    } else {
+      // Send the affectedRows along with its ID back to the client
+      db.query('SELECT * FROM events WHERE id = ?', eventID, (error, events) => {
+        if (error) {
+          // Handle database error
+          response.status(500).send('An error occurred while getting the event after updating.');
+        }
+
+        // Send the updated properties along with its ID back to the client
+        response.send(events);          
+      });
+    }
   });
 }
 
@@ -156,7 +171,9 @@ Event.removeEvent = function (request, response) {
     }
 
     // Send the results back to the client
-    response.send(results);
+    response.send({
+      affectedRows: results.affectedRows
+    });
   })
 }
 
@@ -168,14 +185,18 @@ Event.removeEvent = function (request, response) {
  */
 Event.removeAllEvents = function (request, response) {
   // Execute SQL query to delete all events
-  db.query('DELETE FROM events', [request.params.id], function (err, results) {
+  db.query('DELETE FROM events', function (err, results) {
     if (err) {
       // Handle database error
       response.status(500).send('An error occurred while deleting the events.');
     }
 
-    // Send the results back to the client
-    response.send(results);
+    if (results.affectedRows >= 1) {
+      // Send the results back to the client
+      response.send({
+        affectedRows: results.affectedRows
+      });
+    }
   })
 }
 
